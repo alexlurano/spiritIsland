@@ -6,6 +6,7 @@ public class Deck {
 	String deckName;
 	int numberOfCards = 0; // power cards and spirit hands should always start with the same amount, fear and invader deck depends on opponent.
 	Card[] cardsInDeck;
+	int drawSpot = 0;
 	
 	public Deck(char typeOfDeck) {
 		// todo: check adversary to alter size of invader and fear decks.
@@ -132,6 +133,16 @@ public class Deck {
 	
 	public int getNumberOfCards() {
 		return numberOfCards;
+	}
+	
+	public String drawCard(int numOfCards) {
+		//todo for drawing power cards, all need to be "drawn" but only 1 should be added to hand
+		String cardsTaken = "";
+		for(int i=0;i<numOfCards;i++) {
+			cardsTaken += cardsInDeck[drawSpot].getCardName();
+			drawSpot++;
+		}
+		return cardsTaken;
 	}
 	
 

@@ -5,12 +5,11 @@ public class Board {
 	char[] tileIndex = {'a','a','a','a','a','a','a','a'};
 	int boardNumber = 0;
 	Tile[] tileInfo = new Tile[8];
-	Deck invaderDeck;
-	Deck fearDeck;
 	
 
 	
-	
+
+	public void printJob(String args) { System.out.println(args); }
 	public void assignTiles( ) {
 
 		switch(boardNumber) {
@@ -18,15 +17,7 @@ public class Board {
 			char[] tempIndex1 = {'m','w','j','s','w','m','s','j'};
 	        for (int i=0; i<8; i++) 
 	            tileIndex[i] = tempIndex1[i];
-			invaderDeck = new Deck('i');
-			//System.out.println(invaderDeck.toString());
 
-			//--------------------------------------------------------------------------------------------
-			// attempt to create the fear deck, fear deck and invader deck and event deck assigned to board 1 for now;
-			
-			fearDeck = new Deck('f');
-			String[] tempFearNames = {"aa","bb","cc","dd","ee","ff","gg","hh","ii"};
-			fearDeck.populateDeck(tempFearNames, "Fear");
 			break;
 		case 1:
 			char[] tempIndex2 = {'w','m','s','j','s','w','m','j'};
@@ -55,10 +46,14 @@ public class Board {
 		}
 	}
 	
+	private void initBaddies() {
+		int citySpot = ((boardNumber % 3)+1);
+		tileInfo[citySpot].addInvader("City", 1);
+		
+	}
 	public void defineTiles() {
 		for(int i = 0; i < 8; i++) {
-			tileInfo[i] = new Tile();
-			tileInfo[i].populateTileInfo(boardNumber, i, tileIndex[i]);
+			tileInfo[i] = new Tile(boardNumber, i, tileIndex[i]);
 		}
 	}
 
@@ -66,22 +61,23 @@ public class Board {
 		boardNumber = args;
 		assignTiles();
 		defineTiles();
+		initBaddies();
 
 	}
 	
-	public void invaderAction(char exploreSpots, char buildSpot, char ravageSpot, char[] additionalAction,int[] additionaIndex) {
-		for(int i=0;i<8;i++) {
-			if(exploreSpots == tileIndex[i])
-				tileInfo[i].explore();
-		}
+	public void invaderAction(String exploreSpots, String buildSpot, String ravageSpot) {
+		printJob(exploreSpots+buildSpot+ravageSpot+boardNumber);
 	}
 	
 	public String toString() {
 		String returnString = "";
-		returnString ="boardnumber: " + boardNumber;
-		if(boardNumber == 0)
-			returnString += "invader deck has " +invaderDeck.getNumberOfCards();
-		return returnString;
+		returnString ="boardnumber: " + boardNumber + "\n";
+		returnString += "Quickreference " + Arrays.toString(tileIndex);
+		for(int i=0;i<tileInfo.length;i++)
+			returnString += "\n" +tileInfo[i].toString();
+//		if(boardNumber == 0)
+//			returnString += "invader deck has " +invaderDeck.getNumberOfCards(); // I dont like that the invader deck
+		return returnString;													//is part of board 1 plz change it
 	}
 
 }

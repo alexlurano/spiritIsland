@@ -6,4 +6,5 @@
  *
  */
 module temporary {
+	requires java.xml;
 }

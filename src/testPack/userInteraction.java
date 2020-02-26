@@ -1,37 +1,40 @@
 package testPack;
 
 import java.io.*;
-import java.util.ArrayList;;
 
 public class userInteraction {
-	ArrayList<String> returningInfo;
 	BufferedReader myObj;
 	Spirit requestedSpirit[];
 	Board requestedBoard[];
+	boolean isInteracting;
 	
-	public userInteraction() {
 
-		myObj = new BufferedReader(new InputStreamReader(System.in));
-		returningInfo = new ArrayList<String>();
-		returningInfo.add("objectwanted");
-		returningInfo.add("objectwantedIndice");
-	}
-	
-	public ArrayList<String> getInfoSoFar(boolean endInput) {
-		if(endInput)
-			closeReader();
-//		System.out.println(cloneSpirit.toString());
-		returningInfo.set(0, requestedSpirit.toString());
-		returningInfo.set(1, requestedBoard.toString());
-		return returningInfo;
-	}
-	
-	public void recieveAllObjects(Spirit[] mySpirit,Board[] myBoard) {
+	public void printJob(String args) { System.out.println(args); }
+	public userInteraction(Spirit[] mySpirit, Board[] myBoard) {
 		requestedSpirit = mySpirit;
 		requestedBoard = myBoard;
-		
+		printJob("honkhonk");
+		isInteracting = true;
+		myObj = new BufferedReader(new InputStreamReader(System.in));
 	}
 	
+
+	public void advanceStage() {
+		//int wordOfUser;
+		try {
+			printJob("presskeyto go");
+			myObj.readLine();
+			//wordOfUser = Integer.parseInt(askForWords("Advance Stage? press "));
+			
+			/*if(wordOfUser==1) {
+			}
+			else {
+				System.out.println("bye");
+			}*/
+		} catch (IOException ex1) {
+    		System.out.println("fucked up in user interaction advancing stage " + ex1.toString());
+		}
+	}
 
 
 	
@@ -39,27 +42,39 @@ public class userInteraction {
 	
 	public void askThePlayer()  {
 		int indx;
-	     
-		
-		try {		
-			indx = promptUser("Select player to inspect, valid inputs are: 1,2,3,4");
-			tellUserAbout(true,indx);
-			promptUser("Select board to inspect, valid inputs are: 1,2,3,4");  // Read user input
-			tellUserAbout(false,indx);
 
-	    } catch (IOException ex1) {
-			System.out.println("fucked up in user interaction " + ex1.toString());
+		while(isInteracting) {
+			try {		
+				//indx = askForNumber("Select player to inspect, valid inputs are: 1,2,3,4");
+				//tellUserAbout(true,indx);
+				indx = askForNumber("Select board to inspect, valid inputs are: 1,2,3,4");  // Read user input
+				tellUserAbout(false,indx);
+				printJob("type 0 to quit");
+				if(Integer.parseInt(myObj.readLine()) == 0)
+					isInteracting = false;
+
+			} catch (IOException ex1) {
+	    		System.out.println("fucked up in user interaction " + ex1.toString());
+			}
 		}
 		
+		closeReader();
 	}
 	
-	private int promptUser(String displayMessage) throws IOException {
+	private int askForNumber(String displayMessage) throws IOException {
 		int optionPicked = -1;
 		
 	    System.out.println(displayMessage);
 	    optionPicked = Integer.parseInt(myObj.readLine()) - 1;  // Read user input
 		return optionPicked;
 				
+	}
+	
+	private String askForWords(String displayMessage) throws IOException {
+		String userInput = "";
+		System.out.println(displayMessage);
+		userInput = myObj.readLine();
+		return userInput;
 	}
 	
 	private void tellUserAbout(boolean isPlayer, int indxn) {
@@ -69,7 +84,7 @@ public class userInteraction {
 			System.out.println(requestedBoard[indxn].toString());
 	}
 	
-	private void closeReader() {
+	public void closeReader() {
 		
 
 		try {

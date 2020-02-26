@@ -20,5 +20,9 @@ public class Card {
 	public String toString() {
 		return("This card is a(n) " + cardType + " it is called " + cardName); 
 	}
+	
+	public String getCardName() {
+		return cardName;
+	}
 
 }
