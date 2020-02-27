@@ -5,9 +5,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+
 import spiritView.TempDataStorage;
 
-public class CardListParser {
+public class RawCardListCreator {
 
     List<String> linesForDatabase = Collections.emptyList();
     ArrayList<String> parsedCardInfo = new ArrayList<String>();
@@ -15,12 +16,8 @@ public class CardListParser {
     String germanfile = "minor powers.txt";
 
 	private void printJob(String args) { System.out.println(args); }
-	private void printArrayList(ArrayList<String> args) {
-    	args.forEach(card ->{
-    		System.out.println(card);
-    	});
-	}
-	public CardListParser() {
+
+	public RawCardListCreator() {
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -32,7 +29,10 @@ public class CardListParser {
 	    Iterator<String> itr = linesForDatabase.iterator(); 
 	    
 	    parseLoop(itr);
-	    printArrayList(parsedCardInfo);
+
+
+
+	    //System.out.println(person.toString());
 
 	}
 	
@@ -81,5 +81,7 @@ public class CardListParser {
 		
 		return false;
 	}
-
+	public ArrayList<String> getCardArray() {
+		return parsedCardInfo;
+	}
 }

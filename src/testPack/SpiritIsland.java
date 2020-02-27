@@ -19,8 +19,11 @@ public class SpiritIsland {
 		//storageUnit.doStuff();
 		
 
-		CardListParser makeCleanInfo = new CardListParser();
+		RawCardListCreator makeCleanInfo = new RawCardListCreator();
 		makeCleanInfo.accessInfoFromGermans();
+		
+		RawToJsonParser makeInfoPretty = new RawToJsonParser();
+		makeInfoPretty.createJsonFile(makeCleanInfo.getCardArray());
 		
 		GameContainer objectToHoldall = new GameContainer();
 		objectToHoldall.doStuff();
