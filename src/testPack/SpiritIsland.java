@@ -22,7 +22,7 @@ public class SpiritIsland {
 		RawCardListCreator makeCleanInfo = new RawCardListCreator();
 		makeCleanInfo.accessInfoFromGermans();
 		
-		RawToJsonParser makeInfoPretty = new RawToJsonParser();
+		RawCardListToNestedArray makeInfoPretty = new RawCardListToNestedArray();
 		makeInfoPretty.createJsonFile(makeCleanInfo.getCardArray());
 		
 		GameContainer objectToHoldall = new GameContainer();
