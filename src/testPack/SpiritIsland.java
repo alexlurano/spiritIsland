@@ -19,11 +19,7 @@ public class SpiritIsland {
 		//storageUnit.doStuff();
 		
 
-		RawCardListCreator makeCleanInfo = new RawCardListCreator();
-		makeCleanInfo.accessInfoFromGermans();
-		
-		RawCardListToNestedArray makeInfoPretty = new RawCardListToNestedArray();
-		makeInfoPretty.createJsonFile(makeCleanInfo.getCardArray());
+
 		
 		GameContainer objectToHoldall = new GameContainer();
 		objectToHoldall.doStuff();

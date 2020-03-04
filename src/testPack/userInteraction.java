@@ -1,6 +1,18 @@
+/*	Author Alex Gerhards
+ * 
+ *  this was written as a way to debug and explore objects.
+ * 
+ * 
+ * 
+ */
+
+
+
 package testPack;
 
 import java.io.*;
+
+import structural.Spirit;
 
 public class userInteraction {
 	BufferedReader myObj;
