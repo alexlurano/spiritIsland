@@ -2,13 +2,17 @@ package controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -28,12 +32,15 @@ public class FullCardListExplorer {
     String displayedType = "minor";
 	String[] minorNames;
 	String[] majorNames;
-	String[] startNames;
+	String[] startNames; //remove these once imagedataholder is working.
+	ArrayList<String> allNames = new ArrayList<String>();
 	JFrame f;
 	JTextArea textArea;
 	ComboBoxModel choices;
 	String response;
-	JLabel imageLabel;
+	JLabel imageLabel;// remove once dataholder works
+	ImageDataHolder myImages = new ImageDataHolder();
+	EventHandler ehandle;
 	ArrayList<JPanel> jPanelArr = new ArrayList<JPanel>();
 	
 	public FullCardListExplorer(JFrame theFrame) {
@@ -42,16 +49,23 @@ public class FullCardListExplorer {
 	    
 	    jPanelArr.add(new JPanel(new GridBagLayout()));
 	    jPanelArr.add(new JPanel());
+	    jPanelArr.add(new JPanel(new GridBagLayout()));
 	    jPanelArr.add(new JPanel());
-	    jPanelArr.add(new JPanel());
+	    ehandle = new EventHandler();
 	}
 
 	private void printJob(String args) { System.out.println(args);}
 	
-public void addInfoToList(String[] args,String[] args2,String[] args3) {
+public void addInfoToList(String[] args,String[] args2,String[] args3) {//call this before anything
 	minorNames = args;
 	majorNames = args2;
 	startNames = args3;
+	for(String s:args)
+		allNames.add(s);
+	for(String s:args2)
+		allNames.add(s);
+	for(String s:args3)
+		allNames.add(s);
 	
 }
 
@@ -62,7 +76,8 @@ public void assignListener(ActionListener args,int paneloc) {
 }
 
 public void assignMouseListener(MouseListener args, int indx) {
-	jPanelArr.get(3).getComponent(indx).addMouseListener(args);
+//	jPanelArr.get(3).getComponent(indx).addMouseListener(args);
+	jPanelArr.get(3).getComponent(indx).addMouseListener(ehandle.getSimpleMouseListener(true, false, false, false));
 }
 
 
@@ -88,8 +103,10 @@ public void addImage(String name) {
 	jPanelArr.get(2).remove(imageLabel);
     imageLabel.removeAll();
     ImageIcon image = new ImageIcon(name);
+    image = new ImageIcon(getScaledImage(image.getImage(),image.getIconWidth()/2,image.getIconHeight()/2));
     imageLabel = new JLabel(image);
     imageLabel.setBounds(10, 10, 400, 400);
+    imageLabel.addMouseListener(ehandle.getSimpleMouseListener(false, true, true, false));
     imageLabel.setVisible(true);
     jPanelArr.get(2).add(imageLabel);
 }
@@ -100,12 +117,15 @@ public void createWindow() {
 
 		    JButton minorButton = new JButton("minor!");
 		    minorButton.setBounds(100,100,140,40);
-		    
+		    minorButton.setName("minor");
 		    JButton majorButton = new JButton("major!");
+		    majorButton.setName("major");
 		    majorButton.setBounds(100,100,140,40);
 		    JButton startButton = new JButton("start!");
 		    startButton.setBounds(100,100,140,40);
-		    ImageIcon image = new ImageIcon("C:\\Users\\agerh\\eclipse-workspace\\Spirit Island\\src\\data\\imgs\\a year of perfect stillness.jpg");
+		    startButton.setName("start");
+		    myImages.prepareImages(allNames);
+		    ImageIcon image = new ImageIcon(myImages.getImage(2));
 		    imageLabel = new JLabel(image);
 		    imageLabel.setBounds(10, 10, 400, 400);
 		    imageLabel.setVisible(true);
@@ -146,7 +166,8 @@ public String getItemChoice() {
 
 public void setresponse(String args) {
 	response = args;
-	textArea.append(args+"\n");
+	textArea.setText(args);
+	//textArea.append(args+"\n");
 }
 
 public void setCardValues(String[] args) {
@@ -160,16 +181,68 @@ public void setCardValues(String[] args) {
 
 		JTextArea text2 = new JTextArea(5,40);
 		c.gridx = 0;
-	    c.gridy = i;
+	    c.gridy = i+1;
+	    c.ipady = 20;
 		text2.append(args[i]);
 		jPanelArr.get(0).add(text2,c);
 	}
 
 	jPanelArr.get(0).setBounds(10, 10, 400, 400);
 }
+private Image getScaledImage(Image srcImg, int w, int h){
+    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2 = resizedImg.createGraphics();
+
+    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    g2.drawImage(srcImg, 0, 0, w, h, null);
+    g2.dispose();
+
+    return resizedImg;
+}
 
 public void showWindow() {
 
     f.setVisible(true);
+    while(
+			mainEventLoop());
 }
+
+private void doubleSizeOfImage() {
+	printJob("double");
+	Image img = ((ImageIcon) imageLabel.getIcon()).getImage();
+	ImageIcon img2 = new ImageIcon(img);
+
+	jPanelArr.get(2).remove(imageLabel);
+    imageLabel.removeAll();
+	imageLabel = new JLabel(new ImageIcon(getScaledImage(img2.getImage(),img2.getIconWidth()*2,img2.getIconHeight()*2)));
+
+    imageLabel.setBounds(10, 10, 400, 400);
+    imageLabel.addMouseListener(ehandle.getSimpleMouseListener(false, true, true, false));
+    imageLabel.setVisible(true);
+   // jPanelArr.get(2).add(imageLabel);
+	//    jPanelArr.get(2).
+}
+
+public boolean mainEventLoop() {
+	//every 200ms ask ehande for any events fired.
+	if(ehandle.getreadyForHelp())
+		return eventDoor();
+	try {
+		Thread.sleep(500);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	return true;
+}
+public boolean eventDoor() {
+	String whatDoNow = ehandle.mouseEventsFired();
+	
+	if(whatDoNow.equalsIgnoreCase("grow"))
+		doubleSizeOfImage();
+	
+	return true;
+}
+
+
  }
